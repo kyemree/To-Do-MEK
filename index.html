@@ -1,13 +1,10 @@
-
-
 <!DOCTYPE html>
-
-<html data-theme="light" lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>to-do MEK | All-in-One</title>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>to-do MEK</title>
+  <style>
     :root {
       --color-light-bg: #ffffff;
       --color-light-text: #111111;
@@ -16,227 +13,267 @@
       --color-accent: #f1c40f;
     }
     [data-theme="light"] {
-      --bg: var(--color-light-bg);
-      --text: var(--color-light-text);
+      --color-bg: var(--color-light-bg);
+      --color-text: var(--color-light-text);
     }
     [data-theme="dark"] {
-      --bg: var(--color-dark-bg);
-      --text: var(--color-dark-text);
+      --color-bg: var(--color-dark-bg);
+      --color-text: var(--color-dark-text);
     }
-
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', Tahoma, sans-serif;
       margin: 0;
-      padding: 0;
-      transition: background 0.3s, color 0.3s;
+      padding: 40px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-
-    .header {
-      background-color: var(--color-accent);
-      color: #111;
-      padding: 20px;
+    h1 {
+      font-size: 2.2rem;
+      color: var(--color-accent);
+    }
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
       text-align: center;
     }
-
-    .theme-toggle {
+    .theme-toggle, .lang-toggle {
       position: fixed;
       top: 20px;
-      right: 20px;
       background-color: var(--color-accent);
-      color: #111;
-      padding: 10px 16px;
-      font-weight: bold;
+      color: var(--color-light-text);
       border: none;
+      padding: 8px 16px;
+      font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
     }
+    .theme-toggle { right: 20px; }
+    .lang-toggle { left: 20px; }
 
-    .tabs {
-      display: none;
-      flex-direction: column;
-      padding: 20px;
-    }
-
-    .tab-buttons {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .tab-buttons button {
-      background-color: #444;
-      color: #fff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .tab {
-      display: none;
-    }
-
-    .active {
-      display: block;
-    }
-
-    .task-box {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
+    .lang-menu {
+      position: fixed;
+      top: 60px;
+      left: 20px;
+      background-color: var(--color-bg);
       border: 1px solid #ccc;
       border-radius: 10px;
-    }
-
-    input[type="text"], input[type="email"], input[type="date"] {
-      width: calc(100% - 20px);
       padding: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 160px;
+      z-index: 999;
+    }
+    .lang-menu button {
+      background: none;
+      border: none;
+      padding: 8px;
+      text-align: left;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--color-text);
+      border-radius: 6px;
+    }
+    .lang-menu button:hover {
+      background-color: #f1f1f1;
+      color: #000;
+    }
+    #desc2 {
+      margin-top: 10px;
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .todo-panel {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .todo-section {
+      border: 2px solid var(--color-accent);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: left;
+    }
+    .todo-section h2 {
+      margin-top: 0;
+      color: var(--color-accent);
+    }
+    .todo-section input[type="date"],
+    .todo-section input[type="text"] {
+      padding: 8px;
+      font-size: 1rem;
       margin-bottom: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      width: calc(50% - 10px);
     }
-
-    button.add-btn {
-      padding: 10px 20px;
+    .todo-section button {
+      padding: 8px 12px;
       background-color: var(--color-accent);
       border: none;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
-      margin-bottom: 10px;
     }
-
-    ul {
+    .todo-section ul {
+      list-style: disc;
       padding-left: 20px;
     }
-
-    li {
-      margin-bottom: 6px;
+    .todo-section li {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      margin: 5px 0;
     }
-
-    .delete-btn {
-      background: red;
+    .todo-section li button {
+      background-color: red;
       color: white;
       border: none;
-      border-radius: 6px;
-      padding: 4px 10px;
+      border-radius: 4px;
       cursor: pointer;
+      padding: 2px 6px;
     }
 
-    .login {
-      padding: 50px;
-      max-width: 400px;
-      margin: 60px auto;
-    }
-
-    .login input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .login button {
-      width: 100%;
-      padding: 10px;
-      background-color: var(--color-accent);
-      border: none;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .user-info {
-      text-align: center;
-      margin-bottom: 20px;
-      font-weight: bold;
+    /* Responsive */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+      .todo-section input[type="text"] {
+        width: 100%;
+        margin: 5px 0;
+      }
+      .theme-toggle, .lang-toggle {
+        font-size: 14px;
+        padding: 6px 12px;
+      }
     }
   </style>
-<!-- Firebase App (core) -->
-<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"></script>
-<!-- Firebase Firestore -->
-<script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js"></script>
-<!-- Firebase Config -->
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBT7H0k34FsgMsCPWUAIs9e_6g_PkNkkgs",
-    authDomain: "to-do-mek.firebaseapp.com",
-    projectId: "to-do-mek",
-    storageBucket: "to-do-mek.firebasestorage.app",
-    messagingSenderId: "436508646106",
-    appId: "1:436508646106:web:c2d0393d96c795d43423e3",
-    measurementId: "G-F6ZZRR16NF"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
 </head>
 <body>
-<button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-<div class="header">
-<h1>to-do MEK</h1>
-</div>
-<div class="login" id="loginScreen">
-<h2>Login</h2>
-<input id="firstname" placeholder="First Name" type="text"/>
-<input id="lastname" placeholder="Last Name" type="text"/>
-<input id="email" placeholder="Email (Gmail only)" type="email"/>
-<button onclick="login()">Login</button>
-</div>
-<div class="tabs" id="taskTabs">
-<div class="user-info" id="welcomeMessage"></div>
-<div class="tab-buttons">
-<button onclick="showTab('daily')">📅 Daily</button>
-<button onclick="showTab('weekly')">🗓️ Weekly</button>
-<button onclick="showTab('monthly')">📆 Monthly</button>
-<button onclick="showTab('yearly')">📈 Yearly</button>
-</div>
-<div class="tab active" id="daily">
-<div class="task-box">
-<h2>📅 Daily Tasks</h2>
-<input id="dailyDate" type="date"/>
-<input id="dailyInput" placeholder="Add a task" type="text"/>
-<button class="add-btn" onclick="addTask('daily')">Add</button>
-<ul id="dailyList"></ul>
-</div>
-</div>
-<div class="tab" id="weekly">
-<div class="task-box">
-<h2>🗓️ Weekly Tasks</h2>
-<input id="weeklyDate" type="date"/>
-<input id="weeklyInput" placeholder="Add a task" type="text"/>
-<button class="add-btn" onclick="addTask('weekly')">Add</button>
-<ul id="weeklyList"></ul>
-</div>
-</div>
-<div class="tab" id="monthly">
-<div class="task-box">
-<h2>📆 Monthly Tasks</h2>
-<input id="monthlyDate" type="date"/>
-<input id="monthlyInput" placeholder="Add a task" type="text"/>
-<button class="add-btn" onclick="addTask('monthly')">Add</button>
-<ul id="monthlyList"></ul>
-</div>
-</div>
-<div class="tab" id="yearly">
-<div class="task-box">
-<h2>📈 Yearly Tasks</h2>
-<input id="yearlyDate" type="date"/>
-<input id="yearlyInput" placeholder="Add a task" type="text"/>
-<button class="add-btn" onclick="addTask('yearly')">Add</button>
-<ul id="yearlyList"></ul>
-</div>
-</div>
-</div>
-<script>
+  <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+  <div class="language-dropdown">
+    <button class="lang-toggle" onclick="toggleLangMenu()">🌍 Diller</button>
+    <div class="lang-menu" id="langMenu">
+      <button onclick="changeLang('en')">🇺🇸 English</button>
+      <button onclick="changeLang('tr')">🇹🇷 Türkçe</button>
+      <button onclick="changeLang('zh')">🇨🇳 中文</button>
+      <button onclick="changeLang('ar')">🇸🇦 العربية</button>
+      <button onclick="changeLang('es')">🇪🇸 Español</button>
+      <button onclick="changeLang('fr')">🇫🇷 Français</button>
+      <button onclick="changeLang('de')">🇩🇪 Deutsch</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1 id="title">to-do MEK</h1>
+    <p id="desc">Welcome to your TaskFlow workspace.</p>
+    <p id="desc2">This page is your to-do list. Organize daily, weekly, and monthly tasks here clearly and efficiently.</p>
+
+    <p id="taskStats" style="text-align:center;font-weight:bold;margin-top:20px;"></p>
+
+    <div class="todo-panel" id="todoSection">
+      <!-- Daily -->
+      <div class="todo-section">
+        <h2>📅 Daily Tasks</h2>
+        <input type="date" id="dailyDate" />
+        <input type="text" placeholder="Add a task" id="dailyInput" />
+        <button onclick="addTask('daily')">Add</button>
+        <ul id="dailyList"></ul>
+      </div>
+
+      <!-- Weekly -->
+      <div class="todo-section">
+        <h2>🗓️ Weekly Tasks</h2>
+        <input type="date" id="weeklyDate" />
+        <input type="text" placeholder="Add a task" id="weeklyInput" />
+        <button onclick="addTask('weekly')">Add</button>
+        <ul id="weeklyList"></ul>
+      </div>
+
+      <!-- Monthly -->
+      <div class="todo-section">
+        <h2>📆 Monthly Tasks</h2>
+        <input type="date" id="monthlyDate" />
+        <input type="text" placeholder="Add a task" id="monthlyInput" />
+        <button onclick="addTask('monthly')">Add</button>
+        <ul id="monthlyList"></ul>
+      </div>
+
+      <!-- Yearly -->
+      <div class="todo-section">
+        <h2>📈 Yearly Tasks</h2>
+        <input type="date" id="yearlyDate" />
+        <input type="text" placeholder="Add a task" id="yearlyInput" />
+        <button onclick="addTask('yearly')">Add</button>
+        <ul id="yearlyList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBT7H0k34FsgMsCPWUAIs9e_6g_PkNkkgs",
+      authDomain: "to-do-mek.firebaseapp.com",
+      projectId: "to-do-mek",
+      storageBucket: "to-do-mek.appspot.com",
+      messagingSenderId: "436508646106",
+      appId: "1:436508646106:web:face78a82b5e8a9d3423e3",
+      measurementId: "G-12FQP4DM3T"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    const translations = {
+      en: {
+        title: "to-do MEK",
+        desc: "Welcome to your TaskFlow workspace.",
+        desc2: "This page is your to-do list. Organize daily, weekly, and monthly tasks here clearly and efficiently."
+      },
+      tr: {
+        title: "to-do MEK",
+        desc: "TaskFlow çalışma alanına hoş geldin.",
+        desc2: "Bu sayfa, günlük, haftalık, aylık ve yıllık görevlerini kolayca takip edebileceğin bir yapılacaklar listesidir."
+      }
+    };
+
+    function toggleLangMenu() {
+      const menu = document.getElementById("langMenu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+    }
+
+    function getLangFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('lang') || 'en';
+    }
+
+    function changeLang(lang) {
+      const newURL = new URL(window.location.href);
+      newURL.searchParams.set('lang', lang);
+      window.location.href = newURL.toString();
+    }
+
+    function applyLang() {
+      const lang = getLangFromURL();
+      const t = translations[lang] || translations.en;
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('desc').textContent = t.desc;
+      document.getElementById('desc2').textContent = t.desc2;
+      document.title = t.title;
+    }
+
     function toggleTheme() {
       const html = document.documentElement;
       const current = html.getAttribute('data-theme');
@@ -245,83 +282,50 @@
       localStorage.setItem('theme', newTheme);
     }
 
-    function login() {
-      const firstname = document.getElementById("firstname").value;
-      const lastname = document.getElementById("lastname").value;
-      const email = document.getElementById("email").value;
-      if (firstname && lastname && email.includes("@gmail.com")) {
-        const fullName = firstname + " " + lastname;
-        localStorage.setItem("mekUser", fullName);
-        localStorage.setItem("mekEmail", email);
-        document.getElementById("welcomeMessage").textContent = `Welcome, ${fullName} (${email})`;
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("taskTabs").style.display = "flex";
-      } else {
-        alert("Please enter valid name and Gmail.");
+    function showNotification(task) {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("Task Reminder", { body: task });
       }
     }
 
-    function showTab(tab) {
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      document.getElementById(tab).classList.add("active");
+    function requestNotificationPermission() {
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+    }
+
+    function updateStats() {
+      const daily = document.getElementById("dailyList").children.length;
+      const weekly = document.getElementById("weeklyList").children.length;
+      const monthly = document.getElementById("monthlyList").children.length;
+      const yearly = document.getElementById("yearlyList").children.length;
+      const total = daily + weekly + monthly + yearly;
+      document.getElementById("taskStats").textContent =
+        `📊 Total Tasks: ${total} (🗓️ Daily: ${daily}, 📅 Weekly: ${weekly}, 📆 Monthly: ${monthly}, 📈 Yearly: ${yearly})`;
     }
 
     function addTask(type) {
-      const input = document.getElementById(type + "Input");
-      const date = document.getElementById(type + "Date").value;
-      const list = document.getElementById(type + "List");
-      
-        if (input.value.trim() !== "") {
-          const li = document.createElement("li");
-          li.textContent = `${date ? "[" + date + "] " : ""}${input.value}`;
-          list.appendChild(li);
+      const input = document.getElementById(`${type}Input`);
+      const list = document.getElementById(`${type}List`);
+      const date = document.getElementById(`${type}Date`).value;
 
-          // Firestore'a görev kaydı
-          db.collection("tasks").add({
-              type: type,
-              date: date,
-              task: input.value,
-              email: localStorage.getItem("mekEmail"),
-              timestamp: new Date()
-          }).then(() => {
-              console.log("Görev Firebase'e eklendi.");
-          }).catch((error) => {
-              console.error("Görev Firebase'e eklenemedi:", error);
-          });
-
-          input.value = "";
-        }
-        
-        li.innerHTML = `${date ? "[" + date + "] " : ""}${input.value} <button class='delete-btn' onclick='this.parentNode.remove()'>🗑️</button>`;
+      if (input.value.trim() !== "") {
+        const li = document.createElement("li");
+        li.innerHTML = `${date ? "[" + date + "] " : ""}${input.value}
+          <button onclick="this.parentElement.remove(); updateStats();">X</button>`;
         list.appendChild(li);
+        showNotification(input.value);
+        updateStats();
         input.value = "";
       }
     }
 
     window.onload = () => {
+      applyLang();
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
-      const user = localStorage.getItem("mekUser");
-      const email = localStorage.getItem("mekEmail");
-      if (user && email) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("taskTabs").style.display = "flex";
-        document.getElementById("welcomeMessage").textContent = `Welcome, ${user} (${email})`;
-      }
+      requestNotificationPermission();
     };
-  
-
-        // Firebase'e kullanıcı bilgisi gönder
-        db.collection("users").add({
-            firstname: firstname,
-            lastname: lastname,
-            email: email,
-            timestamp: new Date()
-        }).then(() => {
-            console.log("Kullanıcı Firebase'e eklendi.");
-        }).catch((error) => {
-            console.error("Firebase'e eklenemedi:", error);
-        });
-        </script>
+  </script>
 </body>
 </html>
