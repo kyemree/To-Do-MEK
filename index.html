@@ -1,9 +1,14 @@
+
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>to-do MEK</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
   <style>
     :root {
       --color-light-bg: #ffffff;
@@ -28,16 +33,9 @@
       color: var(--color-text);
       transition: background-color 0.3s ease, color 0.3s ease;
     }
-    h1 {
-      font-size: 2.2rem;
-      color: var(--color-accent);
-    }
-    .content {
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .theme-toggle, .lang-toggle {
+    h1 { font-size: 2.2rem; color: var(--color-accent); }
+    .content { max-width: 800px; margin: 0 auto; text-align: center; }
+    .theme-toggle, .lang-toggle, .logout-btn {
       position: fixed;
       top: 20px;
       background-color: var(--color-accent);
@@ -51,6 +49,7 @@
     }
     .theme-toggle { right: 20px; }
     .lang-toggle { left: 20px; }
+    .logout-btn { right: 120px; }
 
     .lang-menu {
       position: fixed;
@@ -67,7 +66,6 @@
       min-width: 160px;
       z-index: 999;
     }
-
     .lang-menu button {
       background: none;
       border: none;
@@ -78,11 +76,7 @@
       color: var(--color-text);
       border-radius: 6px;
     }
-
-    .lang-menu button:hover {
-      background-color: #f1f1f1;
-      color: #000;
-    }
+    .lang-menu button:hover { background-color: #f1f1f1; color: #000; }
 
     #desc2 {
       margin-top: 10px;
@@ -99,19 +93,13 @@
       flex-direction: column;
       gap: 40px;
     }
-
     .todo-section {
       border: 2px solid var(--color-accent);
       border-radius: 10px;
       padding: 20px;
       text-align: left;
     }
-
-    .todo-section h2 {
-      margin-top: 0;
-      color: var(--color-accent);
-    }
-
+    .todo-section h2 { margin-top: 0; color: var(--color-accent); }
     .todo-section input[type="date"],
     .todo-section input[type="text"] {
       padding: 8px;
@@ -120,7 +108,6 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-
     .todo-section button {
       padding: 8px 12px;
       background-color: var(--color-accent);
@@ -129,19 +116,26 @@
       font-weight: bold;
       cursor: pointer;
     }
-
+    .task-item { display: flex; align-items: center; justify-content: space-between; }
+    .task-buttons button {
+      margin-left: 10px;
+      padding: 4px 8px;
+      background-color: crimson;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
     #loginSection {
       max-width:500px;
       margin:30px auto;
       text-align:center;
     }
-
     #loginSection input {
       width: 80%;
       padding: 10px;
       margin-bottom: 10px;
     }
-
     #loginSection button {
       padding: 10px 20px;
       background-color: #f1c40f;
@@ -153,90 +147,56 @@
   </style>
 </head>
 <body>
-  <button class="theme-toggle" onclick="window.toggleTheme()">🌓</button>
-  <button class="lang-toggle" onclick="window.toggleLangMenu()">🌍 Diller</button>
+  <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+  <button class="lang-toggle" onclick="toggleLangMenu()">🌍 Diller</button>
+  <button class="logout-btn" onclick="logout()">🚪 Çıkış</button>
   <div class="lang-menu" id="langMenu">
-    <button onclick="window.changeLang('en')">🇺🇸 English</button>
-    <button onclick="window.changeLang('tr')">🇹🇷 Türkçe</button>
-    <button onclick="window.changeLang('zh')">🇨🇳 中文</button>
-    <button onclick="window.changeLang('ar')">🇸🇦 العربية</button>
-    <button onclick="window.changeLang('es')">🇪🇸 Español</button>
-    <button onclick="window.changeLang('fr')">🇫🇷 Français</button>
-    <button onclick="window.changeLang('de')">🇩🇪 Deutsch</button>
+    <button onclick="changeLang('en')">🇺🇸 English</button>
+    <button onclick="changeLang('tr')">🇹🇷 Türkçe</button>
   </div>
 
   <div id="loginSection">
     <h2>🔐 Giriş Yap</h2>
-    <input type="text" id="nameInput" placeholder="Ad Soyad"><br>
     <input type="email" id="emailInput" placeholder="E-posta"><br>
     <input type="password" id="passwordInput" placeholder="Şifre"><br>
-    <button onclick="window.loginUser()">Giriş Yap</button>
+    <button onclick="login()">Giriş Yap</button>
   </div>
 
-  <div class="content">
+  <div class="content" style="display:none;">
     <h1 id="title">to-do MEK</h1>
     <p id="desc">Welcome to your TaskFlow workspace.</p>
     <p id="desc2">This page is your to-do list. Organize daily, weekly, monthly, and yearly tasks here clearly and efficiently.</p>
-
-    <div class="todo-panel">
-      <div class="todo-section">
-        <h2>📅 Daily Tasks</h2>
-        <input type="date" id="dailyDate" />
-        <input type="text" placeholder="Add a task" id="dailyInput" />
-        <button onclick="addTask('daily')">Add</button>
-        <ul id="dailyList"></ul>
-      </div>
-
-      <div class="todo-section">
-        <h2>🗓️ Weekly Tasks</h2>
-        <input type="date" id="weeklyDate" />
-        <input type="text" placeholder="Add a task" id="weeklyInput" />
-        <button onclick="addTask('weekly')">Add</button>
-        <ul id="weeklyList"></ul>
-      </div>
-
-      <div class="todo-section">
-        <h2>📆 Monthly Tasks</h2>
-        <input type="date" id="monthlyDate" />
-        <input type="text" placeholder="Add a task" id="monthlyInput" />
-        <button onclick="addTask('monthly')">Add</button>
-        <ul id="monthlyList"></ul>
-      </div>
-
-      <div class="todo-section">
-        <h2>📈 Yearly Tasks</h2>
-        <input type="date" id="yearlyDate" />
-        <input type="text" placeholder="Add a task" id="yearlyInput" />
-        <button onclick="addTask('yearly')">Add</button>
-        <ul id="yearlyList"></ul>
-      </div>
-    </div>
+    <div class="todo-panel" id="todoPanel"></div>
   </div>
 
-  <script>
-    const translations = {
-      en: {
-        title: "to-do MEK",
-        desc: "Welcome to your TaskFlow workspace.",
-        desc2: "This page is your to-do list. Organize daily, weekly, and monthly tasks here clearly and efficiently."
-      },
-      tr: {
-        title: "to-do MEK",
-        desc: "TaskFlow çalışma alanına hoş geldin.",
-        desc2: "Bu sayfa, günlük, haftalık, aylık ve yıllık görevlerini kolayca takip edebileceğin bir yapılacaklar listesidir."
-      }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBT7H0k34FsgMsCPWUAIs9e_6g_PkNkkgs",
+      authDomain: "to-do-mek.firebaseapp.com",
+      projectId: "to-do-mek",
+      storageBucket: "to-do-mek.firebasestorage.app",
+      messagingSenderId: "436508646106",
+      appId: "1:436508646106:web:c2d0393d96c795d43423e3",
+      measurementId: "G-F6ZZRR16NF"
     };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore(app);
 
     window.toggleLangMenu = function () {
       const menu = document.getElementById("langMenu");
       menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
+    };
 
-    window.changeLang = function (lang) {
-      const newURL = new URL(window.location.href);
-      newURL.searchParams.set('lang', lang);
-      window.location.href = newURL.toString();
-    }
+    window.changeLang = function(lang) {
+      localStorage.setItem("lang", lang);
+      location.reload();
+    };
 
     window.toggleTheme = function () {
       const html = document.documentElement;
@@ -244,48 +204,87 @@
       const newTheme = current === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
+    };
+
+    window.logout = function () {
+      signOut(auth).then(() => {
+        localStorage.removeItem("email");
+        location.reload();
+      });
+    };
+
+    window.login = function () {
+      const email = document.getElementById("emailInput").value;
+      const password = document.getElementById("passwordInput").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          localStorage.setItem("email", email);
+          document.getElementById("loginSection").style.display = "none";
+          document.querySelector(".content").style.display = "block";
+          loadTasks();
+        }).catch(alert);
+    };
+
+    async function loadTasks() {
+      const email = localStorage.getItem("email");
+      const taskArea = document.getElementById("todoPanel");
+      taskArea.innerHTML = "";
+      const types = ["Daily", "Weekly", "Monthly", "Yearly"];
+      for (const type of types) {
+        const sec = document.createElement("div");
+        sec.className = "todo-section";
+        sec.innerHTML = `<h2>${type} Tasks</h2>
+          <input type="date" id="${type}Date"/>
+          <input type="text" placeholder="Add a task" id="${type}Input"/>
+          <button onclick="addTask('${type}')">Add</button>
+          <ul id="${type}List"></ul>`;
+        taskArea.appendChild(sec);
+
+        const q = await getDocs(collection(db, "users", email, type));
+        q.forEach(docSnap => {
+          const li = document.createElement("li");
+          li.className = "task-item";
+          li.innerHTML = `<span>${docSnap.data().text}</span>
+            <div class="task-buttons">
+              <button onclick="deleteTask('${type}', '${docSnap.id}')">🗑️</button>
+            </div>`;
+          sec.querySelector("ul").appendChild(li);
+        });
+      }
     }
 
-    window.loginUser = function () {
-      const name = document.getElementById("nameInput").value.trim();
-      const email = document.getElementById("emailInput").value.trim();
-      const password = document.getElementById("passwordInput").value.trim();
-      if (!name || !email || !password) {
-        alert("Lütfen tüm alanları doldurun.");
-        return;
-      }
-      localStorage.setItem("userName", name);
-      localStorage.setItem("userEmail", email);
-      document.getElementById("loginSection").style.display = "none";
-      document.querySelector(".content").style.display = "block";
-      const greeting = document.createElement("h3");
-      greeting.textContent = `👋 Hoş geldin, ${name}!`;
-      greeting.style.marginTop = "20px";
-      document.querySelector(".content").insertBefore(greeting, document.querySelector(".content").firstChild);
-    }
+    window.addTask = async function(type) {
+      const email = localStorage.getItem("email");
+      const input = document.getElementById(`${type}Input`).value;
+      if (!input) return;
+      await addDoc(collection(db, "users", email, type), { text: input });
+      loadTasks();
+    };
 
-    function addTask(type) {
-      const input = document.getElementById(`${type}Input`);
-      const list = document.getElementById(`${type}List`);
-      const date = document.getElementById(`${type}Date`).value;
-      if (input.value.trim() !== "") {
-        const li = document.createElement("li");
-        li.textContent = `${date ? "[" + date + "] " : ""}${input.value}`;
-        list.appendChild(li);
-        input.value = "";
-      }
-    }
+    window.deleteTask = async function(type, id) {
+      const email = localStorage.getItem("email");
+      await deleteDoc(doc(db, "users", email, type, id));
+      loadTasks();
+    };
 
     window.onload = () => {
-      document.querySelector('.content').style.display = 'none';
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
-      const lang = new URLSearchParams(window.location.search).get("lang") || "en";
-      const t = translations[lang] || translations.en;
+      const savedLang = localStorage.getItem('lang') || 'en';
+      const titles = {
+        en: { title: "to-do MEK", desc: "Welcome to your TaskFlow workspace.", desc2: "Organize daily, weekly, monthly, and yearly tasks here." },
+        tr: { title: "to-do MEK", desc: "TaskFlow çalışma alanına hoş geldin.", desc2: "Günlük, haftalık, aylık ve yıllık görevlerini burada düzenle." }
+      };
+      const t = titles[savedLang] || titles.en;
       document.getElementById("title").textContent = t.title;
       document.getElementById("desc").textContent = t.desc;
       document.getElementById("desc2").textContent = t.desc2;
       document.title = t.title;
+      if (localStorage.getItem("email")) {
+        document.getElementById("loginSection").style.display = "none";
+        document.querySelector(".content").style.display = "block";
+        loadTasks();
+      }
     };
   </script>
 </body>
