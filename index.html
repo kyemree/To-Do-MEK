@@ -6,9 +6,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>to-do MEK</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js">
+    // Firestore'dan görev güncelleme
+    async function updateTask(email, type, taskId, newText, newDate) {
+      const docRef = doc(db, "users", email, type, taskId);
+      await updateDoc(docRef, {
+        text: newText,
+        date: newDate
+      });
+    }
+
+    // Görevi düzenle
+    async function editTask(type, taskId, li) {
+      const email = localStorage.getItem("userEmail");
+      const docRef = doc(db, "users", email, type, taskId);
+      const snap = await getDoc(docRef);
+      const task = snap.data();
+
+      const newText = prompt("Yeni görev metni:", task.text);
+      const newDate = prompt("Yeni tarih (YYYY-MM-DD):", task.date);
+      if (newText !== null && newText.trim() !== "") {
+        await updateTask(email, type, taskId, newText, newDate);
+        li.querySelector("span").textContent = `${newDate ? "[" + newDate + "] " : ""}${newText}`;
+      }
+    }
+</script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js">
+    // Firestore'dan görev güncelleme
+    async function updateTask(email, type, taskId, newText, newDate) {
+      const docRef = doc(db, "users", email, type, taskId);
+      await updateDoc(docRef, {
+        text: newText,
+        date: newDate
+      });
+    }
+
+    // Görevi düzenle
+    async function editTask(type, taskId, li) {
+      const email = localStorage.getItem("userEmail");
+      const docRef = doc(db, "users", email, type, taskId);
+      const snap = await getDoc(docRef);
+      const task = snap.data();
+
+      const newText = prompt("Yeni görev metni:", task.text);
+      const newDate = prompt("Yeni tarih (YYYY-MM-DD):", task.date);
+      if (newText !== null && newText.trim() !== "") {
+        await updateTask(email, type, taskId, newText, newDate);
+        li.querySelector("span").textContent = `${newDate ? "[" + newDate + "] " : ""}${newText}`;
+      }
+    }
+</script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js">
+    // Firestore'dan görev güncelleme
+    async function updateTask(email, type, taskId, newText, newDate) {
+      const docRef = doc(db, "users", email, type, taskId);
+      await updateDoc(docRef, {
+        text: newText,
+        date: newDate
+      });
+    }
+
+    // Görevi düzenle
+    async function editTask(type, taskId, li) {
+      const email = localStorage.getItem("userEmail");
+      const docRef = doc(db, "users", email, type, taskId);
+      const snap = await getDoc(docRef);
+      const task = snap.data();
+
+      const newText = prompt("Yeni görev metni:", task.text);
+      const newDate = prompt("Yeni tarih (YYYY-MM-DD):", task.date);
+      if (newText !== null && newText.trim() !== "") {
+        await updateTask(email, type, taskId, newText, newDate);
+        li.querySelector("span").textContent = `${newDate ? "[" + newDate + "] " : ""}${newText}`;
+      }
+    }
+</script>
+
   <style>
     :root {
       --color-light-bg: #ffffff;
@@ -286,6 +361,31 @@
         loadTasks();
       }
     };
-  </script>
+  
+    // Firestore'dan görev güncelleme
+    async function updateTask(email, type, taskId, newText, newDate) {
+      const docRef = doc(db, "users", email, type, taskId);
+      await updateDoc(docRef, {
+        text: newText,
+        date: newDate
+      });
+    }
+
+    // Görevi düzenle
+    async function editTask(type, taskId, li) {
+      const email = localStorage.getItem("userEmail");
+      const docRef = doc(db, "users", email, type, taskId);
+      const snap = await getDoc(docRef);
+      const task = snap.data();
+
+      const newText = prompt("Yeni görev metni:", task.text);
+      const newDate = prompt("Yeni tarih (YYYY-MM-DD):", task.date);
+      if (newText !== null && newText.trim() !== "") {
+        await updateTask(email, type, taskId, newText, newDate);
+        li.querySelector("span").textContent = `${newDate ? "[" + newDate + "] " : ""}${newText}`;
+      }
+    }
+</script>
+
 </body>
 </html>
