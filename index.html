@@ -3,215 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome | TaskFlow</title>
+  <title>TaskFlow | Dashboard</title>
   <style>
-    :root {
-      --color-dark: #111;
-      --color-light: #fff;
-      --color-accent: #f1c40f;
-    }
-
-    [data-theme="dark"] {
-      --color-bg: var(--color-dark);
-      --color-text: var(--color-light);
-      --color-header-footer: #000;
-    }
-
-    [data-theme="light"] {
-      --color-bg: var(--color-light);
-      --color-text: var(--color-dark);
-      --color-header-footer: #111;
-    }
-
     body {
       margin: 0;
-      padding: 0;
+      padding: 40px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--color-bg);
-      color: var(--color-text);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      background-color: var(--color-bg, #fff);
+      color: var(--color-text, #111);
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    header {
-      background-color: var(--color-header-footer);
-      color: var(--color-light);
-      padding: 20px;
-      text-align: center;
-      position: relative;
+    h1 {
+      font-size: 2rem;
+      color: var(--color-accent, #f1c40f);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      color: var(--color-accent);
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
     }
 
     .theme-toggle {
-      position: absolute;
+      position: fixed;
       top: 20px;
       right: 20px;
-      background-color: var(--color-accent);
-      color: var(--color-dark);
+      background-color: var(--color-accent, #f1c40f);
+      color: #111;
       border: none;
       padding: 8px 16px;
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
-    }
-
-    .language-dropdown {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-    }
-
-    .lang-toggle {
-      background-color: var(--color-accent);
-      color: var(--color-dark);
-      border: none;
-      padding: 8px 16px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .lang-menu {
-      display: none;
-      position: absolute;
-      top: 50px;
-      left: 0;
-      background-color: var(--color-light);
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      z-index: 1000;
-      flex-direction: column;
-      gap: 10px;
-      min-width: 180px;
-    }
-
-    .lang-menu button {
-      background-color: transparent;
-      border: none;
-      text-align: left;
-      padding: 8px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      color: var(--color-dark);
-      transition: background-color 0.3s ease;
-    }
-
-    .lang-menu button:hover {
-      background-color: #f1f1f1;
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-
-    .intro {
-      max-width: 800px;
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .intro h2 {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-    }
-
-    .intro p {
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: var(--color-header-footer);
-      color: var(--color-light);
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="language-dropdown">
-      <button class="lang-toggle" onclick="toggleLangMenu()">🌍 Diller</button>
-      <div class="lang-menu" id="langMenu">
-        <button onclick="setLang('en')">🇺🇸 English</button>
-        <button onclick="setLang('tr')">🇹🇷 Türkçe</button>
-        <button onclick="setLang('zh')">🇨🇳 中文</button>
-        <button onclick="setLang('ar')">🇸🇦 العربية</button>
-        <button onclick="setLang('es')">🇪🇸 Español</button>
-        <button onclick="setLang('fr')">🇫🇷 Français</button>
-        <button onclick="setLang('de')">🇩🇪 Deutsch</button>
-      </div>
-    </div>
-    <h1>TaskFlow</h1>
-    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-  </header>
-  <main>
-    <div class="intro">
-      <h2 id="title">Welcome to TaskFlow</h2>
-      <p id="desc">
-        TaskFlow helps you organize your life by managing daily, weekly, monthly, and yearly goals in a clear and simple way. Select your language to begin.
-      </p>
-    </div>
-  </main>
-  <footer>
-    © 2025 TaskFlow · All rights reserved.
-  </footer>
+  <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+  <div class="content">
+    <h1 id="title">Dashboard</h1>
+    <p id="desc">You are now inside your TaskFlow workspace. Let’s get things done!</p>
+  </div>
 
   <script>
     const translations = {
       en: {
-        title: "Welcome to TaskFlow",
-        desc: "TaskFlow helps you organize your life by managing daily, weekly, monthly, and yearly goals in a clear and simple way. Select your language to begin."
+        title: "Dashboard",
+        desc: "You are now inside your TaskFlow workspace. Let’s get things done!"
       },
       tr: {
-        title: "TaskFlow'a Hoş Geldiniz",
-        desc: "TaskFlow, günlük, haftalık, aylık ve yıllık hedeflerinizi kolayca yöneterek hayatınızı düzenlemenize yardımcı olur. Başlamak için dil seçin."
+        title: "Gösterge Paneli",
+        desc: "Artık TaskFlow çalışma alanındasınız. Hadi işleri halledelim!"
       },
       zh: {
-        title: "欢迎使用 TaskFlow",
-        desc: "TaskFlow 帮助您通过管理每日、每周、每月和每年的目标，轻松组织您的生活。请选择语言开始。"
+        title: "仪表板",
+        desc: "您现在已进入 TaskFlow 工作区。让我们开始吧！"
       },
       ar: {
-        title: "مرحبًا بك في TaskFlow",
-        desc: "يساعدك TaskFlow على تنظيم حياتك من خلال إدارة أهدافك اليومية والأسبوعية والشهرية والسنوية بطريقة بسيطة وواضحة. اختر لغتك للبدء."
+        title: "لوحة التحكم",
+        desc: "أنت الآن داخل مساحة العمل في TaskFlow. لننجز المهام!"
       },
       es: {
-        title: "Bienvenido a TaskFlow",
-        desc: "TaskFlow te ayuda a organizar tu vida gestionando objetivos diarios, semanales, mensuales y anuales de manera clara y sencilla. Selecciona tu idioma para comenzar."
+        title: "Panel",
+        desc: "Ahora estás dentro de tu espacio de trabajo TaskFlow. ¡Manos a la obra!"
       },
       fr: {
-        title: "Bienvenue sur TaskFlow",
-        desc: "TaskFlow vous aide à organiser votre vie en gérant vos objectifs quotidiens, hebdomadaires, mensuels et annuels de manière claire et simple. Sélectionnez votre langue pour commencer."
+        title: "Tableau de bord",
+        desc: "Vous êtes maintenant dans votre espace de travail TaskFlow. Au travail !"
       },
       de: {
-        title: "Willkommen bei TaskFlow",
-        desc: "TaskFlow hilft Ihnen, Ihr Leben zu organisieren, indem es tägliche, wöchentliche, monatliche und jährliche Ziele klar und einfach verwaltet. Wählen Sie Ihre Sprache, um zu beginnen."
+        title: "Dashboard",
+        desc: "Du befindest dich jetzt in deinem TaskFlow-Arbeitsbereich. Los geht’s!"
       }
     };
 
-    function setLang(lang) {
-      const { title, desc } = translations[lang];
-      document.getElementById("title").textContent = title;
-      document.getElementById("desc").textContent = desc;
-      localStorage.setItem('lang', lang);
-      setTimeout(() => {
-        window.location.href = `home.html?lang=${lang}`;
-      }, 2000);
+    function getLangFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('lang') || 'en';
+    }
+
+    function applyLang() {
+      const lang = getLangFromURL();
+      const t = translations[lang] || translations.en;
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('desc').textContent = t.desc;
     }
 
     function toggleTheme() {
@@ -222,15 +98,8 @@
       localStorage.setItem('theme', newTheme);
     }
 
-    function toggleLangMenu() {
-      const menu = document.getElementById("langMenu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-
     window.onload = () => {
-      const savedLang = localStorage.getItem('lang') || 'en';
-      setLang(savedLang);
-
+      applyLang();
       const savedTheme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
     };
