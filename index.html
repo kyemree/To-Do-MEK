@@ -3,20 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TaskFlow | Dashboard</title>
+  <title>to-do MEK</title>
   <style>
+    :root {
+      --color-light-bg: #ffffff;
+      --color-light-text: #111111;
+      --color-dark-bg: #111111;
+      --color-dark-text: #ffffff;
+      --color-accent: #f1c40f;
+    }
+
+    [data-theme="light"] {
+      --color-bg: var(--color-light-bg);
+      --color-text: var(--color-light-text);
+    }
+
+    [data-theme="dark"] {
+      --color-bg: var(--color-dark-bg);
+      --color-text: var(--color-dark-text);
+    }
+
     body {
       margin: 0;
       padding: 40px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--color-bg, #fff);
-      color: var(--color-text, #111);
+      background-color: var(--color-bg);
+      color: var(--color-text);
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     h1 {
-      font-size: 2rem;
-      color: var(--color-accent, #f1c40f);
+      font-size: 2.2rem;
+      color: var(--color-accent);
     }
 
     .content {
@@ -25,57 +43,181 @@
       text-align: center;
     }
 
-    .theme-toggle {
+    .theme-toggle, .lang-toggle {
       position: fixed;
       top: 20px;
-      right: 20px;
-      background-color: var(--color-accent, #f1c40f);
-      color: #111;
+      background-color: var(--color-accent);
+      color: var(--color-light-text);
       border: none;
       padding: 8px 16px;
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
     }
+
+    .theme-toggle { right: 20px; }
+    .lang-toggle { left: 20px; }
+
+    .lang-menu {
+      position: fixed;
+      top: 60px;
+      left: 20px;
+      background-color: var(--color-bg);
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 160px;
+      z-index: 999;
+    }
+
+    .lang-menu button {
+      background: none;
+      border: none;
+      padding: 8px;
+      text-align: left;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--color-text);
+      border-radius: 6px;
+    }
+
+    .lang-menu button:hover {
+      background-color: #f1f1f1;
+      color: #000;
+    }
+
+    #desc2 {
+      margin-top: 10px;
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .todo-panel {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .todo-section {
+      border: 2px solid var(--color-accent);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: left;
+    }
+
+    .todo-section h2 {
+      margin-top: 0;
+      color: var(--color-accent);
+    }
+
+    .todo-section input[type="date"] {
+      padding: 5px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .todo-section ul {
+      list-style: disc;
+      padding-left: 20px;
+    }
+
+    .todo-section input[type="text"] {
+      padding: 8px;
+      width: 60%;
+      margin-right: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .todo-section button {
+      padding: 8px 12px;
+      background-color: var(--color-accent);
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+  <div class="language-dropdown">
+    <button class="lang-toggle" onclick="toggleLangMenu()">🌍 Diller</button>
+    <div class="lang-menu" id="langMenu">
+      <button onclick="changeLang('en')">🇺🇸 English</button>
+      <button onclick="changeLang('tr')">🇹🇷 Türkçe</button>
+      <button onclick="changeLang('zh')">🇨🇳 中文</button>
+      <button onclick="changeLang('ar')">🇸🇦 العربية</button>
+      <button onclick="changeLang('es')">🇪🇸 Español</button>
+      <button onclick="changeLang('fr')">🇫🇷 Français</button>
+      <button onclick="changeLang('de')">🇩🇪 Deutsch</button>
+    </div>
+  </div>
+
   <div class="content">
-    <h1 id="title">Dashboard</h1>
-    <p id="desc">You are now inside your TaskFlow workspace. Let’s get things done!</p>
+    <h1 id="title">to-do MEK</h1>
+    <p id="desc">Welcome to your TaskFlow workspace.</p>
+    <p id="desc2">This page is your to-do list. Organize daily, weekly, and monthly tasks here clearly and efficiently.</p>
+
+    <div class="todo-panel">
+      <div class="todo-section">
+        <h2>📅 Daily Tasks</h2>
+        <input type="date" id="dailyDate" />
+        <input type="text" placeholder="Add a task" id="dailyInput" />
+        <button onclick="addTask('daily')">Add</button>
+        <ul id="dailyList"></ul>
+      </div>
+
+      <div class="todo-section">
+        <h2>🗓️ Weekly Tasks</h2>
+        <input type="date" id="weeklyDate" />
+        <input type="text" placeholder="Add a task" id="weeklyInput" />
+        <button onclick="addTask('weekly')">Add</button>
+        <ul id="weeklyList"></ul>
+      </div>
+
+      <div class="todo-section">
+        <h2>📆 Monthly Tasks</h2>
+        <input type="date" id="monthlyDate" />
+        <input type="text" placeholder="Add a task" id="monthlyInput" />
+        <button onclick="addTask('monthly')">Add</button>
+        <ul id="monthlyList"></ul>
+      </div>
+
+      <div class="todo-section">
+        <h2>📈 Yearly Tasks</h2>
+        <input type="date" id="yearlyDate" />
+        <input type="text" placeholder="Add a task" id="yearlyInput" />
+        <button onclick="addTask('yearly')">Add</button>
+        <ul id="yearlyList"></ul>
+      </div>
+    </div>
   </div>
 
   <script>
     const translations = {
       en: {
-        title: "Dashboard",
-        desc: "You are now inside your TaskFlow workspace. Let’s get things done!"
+        title: "to-do MEK",
+        desc: "Welcome to your TaskFlow workspace.",
+        desc2: "This page is your to-do list. Organize daily, weekly, and monthly tasks here clearly and efficiently."
       },
       tr: {
-        title: "Gösterge Paneli",
-        desc: "Artık TaskFlow çalışma alanındasınız. Hadi işleri halledelim!"
-      },
-      zh: {
-        title: "仪表板",
-        desc: "您现在已进入 TaskFlow 工作区。让我们开始吧！"
-      },
-      ar: {
-        title: "لوحة التحكم",
-        desc: "أنت الآن داخل مساحة العمل في TaskFlow. لننجز المهام!"
-      },
-      es: {
-        title: "Panel",
-        desc: "Ahora estás dentro de tu espacio de trabajo TaskFlow. ¡Manos a la obra!"
-      },
-      fr: {
-        title: "Tableau de bord",
-        desc: "Vous êtes maintenant dans votre espace de travail TaskFlow. Au travail !"
-      },
-      de: {
-        title: "Dashboard",
-        desc: "Du befindest dich jetzt in deinem TaskFlow-Arbeitsbereich. Los geht’s!"
+        title: "to-do MEK",
+        desc: "TaskFlow çalışma alanına hoş geldin.",
+        desc2: "Bu sayfa, günlük, haftalık, aylık ve yıllık görevlerini kolayca takip edebileceğin bir yapılacaklar listesidir."
       }
+      // Diğer diller yukarıdaki gibi eklenebilir
     };
 
     function getLangFromURL() {
@@ -88,6 +230,19 @@
       const t = translations[lang] || translations.en;
       document.getElementById('title').textContent = t.title;
       document.getElementById('desc').textContent = t.desc;
+      document.getElementById('desc2').textContent = t.desc2;
+      document.title = t.title;
+    }
+
+    function changeLang(lang) {
+      const newURL = new URL(window.location.href);
+      newURL.searchParams.set('lang', lang);
+      window.location.href = newURL.toString();
+    }
+
+    function toggleLangMenu() {
+      const menu = document.getElementById("langMenu");
+      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
     }
 
     function toggleTheme() {
@@ -96,6 +251,19 @@
       const newTheme = current === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
+    }
+
+    function addTask(type) {
+      const input = document.getElementById(`${type}Input`);
+      const list = document.getElementById(`${type}List`);
+      const date = document.getElementById(`${type}Date`).value;
+
+      if (input.value.trim() !== "") {
+        const li = document.createElement("li");
+        li.textContent = `${date ? "[" + date + "] " : ""}${input.value}`;
+        list.appendChild(li);
+        input.value = "";
+      }
     }
 
     window.onload = () => {
